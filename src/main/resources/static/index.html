@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>首页</title>
+</head>
+<style>
+    /* 设置表格边框样式 */
+    table {
+        border: 1px solid black;
+    }
+
+    /* 设置表格单元格边框样式 */
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+    }
+</style>
+<body>
+<h2 id="state">等待开始……</h2>
+<button id="search" onclick="search()">搜索</button>
+<button id="pause" onclick="pause()">暂停</button>
+<input id="name" width="200px;" value="GSCアルティメットまどかPVC塗装済み完成品">
+<table>
+    <thead>
+    <tr>
+        <td>商品名</td>
+        <td>价格</td>
+        <td>商品链接</td>
+        <td>商品图片</td>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+
+</table>
+</body>
+<script>
+    function search() {
+        document.querySelector("#state").innerHTML = "5秒后开始下一次搜索..."
+        window.localStorage.setItem("pause", "continue");
+        var timer = setTimeout(() => {
+            fetch(`/mercari/search?name=${document.querySelector("#name").value}`)
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementsByTagName("tbody")[0].innerHTML = ""
+                        return response.text()
+                    }
+                })
+                .then(data => {
+                    data = JSON.parse(data)
+                    for (var i = 0; i < data.length; i++) {
+                        let tbody = document.getElementsByTagName("tbody")[0]
+                        tbody.innerHTML += `<tr><td>${data[i].name}</td><td>${data[i].price}</td><td><a href="https://jp.mercari.com/${data[i].id}">${data[i].id}</a></td><td><img src="${data[i].thumbnails[0]}"></td></tr>`
+                    }
+
+                }).finally(() => {
+                if (window.localStorage.getItem("pause") !== "pause") {
+                    document.querySelector("#state").innerHTML = "已暂停……"
+                    search()
+                }
+            })
+        }, 5000)
+    }
+
+    function pause() {
+            window.localStorage.setItem("pause", "pause");
+        document.querySelector("#state").innerHTML = "已暂停……"
+        clearTimeout(timer)
+    }
+</script>
+</html>
