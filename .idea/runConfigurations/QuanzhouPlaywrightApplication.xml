@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="QuanzhouPlaywrightApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <envs>
-      <env name="PLAYWRIGHT_BROWSERS_PATH" value="$PROJECT_DIR$/ms-playwright" />
-      <env name="PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD" value="0" />
+      <env name="PLAYWRIGHT_BROWSERS_PATH" value="ms-playwright" />
+      <env name="PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD" value="1" />
     </envs>
     <module name="quanzhou-playwright" />
     <option name="PROGRAM_PARAMETERS" value="https://weibo.com/2605594314/MjoHWrN7S" />

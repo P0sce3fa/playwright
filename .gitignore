@@ -33,5 +33,5 @@ build/
 
 ###
 /ms-playwright/
-/.idea/
 /.mvn/
+/.idea/

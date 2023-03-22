@@ -7,7 +7,7 @@
           <option name="delegateBuildToMaven" value="false" />
           <option name="environmentProperties">
             <map>
-              <entry key="PLAYWRIGHT_BROWSERS_PATH" value="$PROJECT_DIR$/../quanzhou-playwright\ms-playwright" />
+              <entry key="PLAYWRIGHT_BROWSERS_PATH" value="ms-playwright" />
               <entry key="PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD" value="1" />
             </map>
           </option>
@@ -31,7 +31,7 @@
               <option value="exec:java" />
               <option value="-e" />
               <option value="-Dexec.mainClass=com.microsoft.playwright.CLI" />
-              <option value="-Dexec.args=codegen https://jp.mercari.com/" />
+              <option value="-Dexec.args=codegen https://www.baidu.com/" />
             </list>
           </option>
           <option name="pomFileName" />
