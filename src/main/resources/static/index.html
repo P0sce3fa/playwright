@@ -40,8 +40,10 @@
 </table>
 </body>
 <script>
+
     function search() {
-        document.querySelector("#state").innerHTML = "5秒后开始下一次搜索..."
+        if (typeof times === 'undefined') times = 5000; else times = 30000;
+        document.querySelector("#state").innerHTML = (times / 1000).toString() + "秒后开始下一次搜索..."
         window.localStorage.setItem("pause", "continue");
         var timer = setTimeout(() => {
             fetch(`/mercari/search?name=${document.querySelector("#name").value}`)
@@ -63,12 +65,13 @@
                     document.querySelector("#state").innerHTML = "已暂停……"
                     search()
                 }
+                document.querySelector("#state").innerHTML = (times / 1000) + "秒后开始下一次搜索..."
             })
-        }, 5000)
+        }, times)
     }
 
     function pause() {
-            window.localStorage.setItem("pause", "pause");
+        window.localStorage.setItem("pause", "pause");
         document.querySelector("#state").innerHTML = "已暂停……"
         clearTimeout(timer)
     }

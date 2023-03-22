@@ -56,28 +56,34 @@ public class BaseController {
         Page defaultPage = this.browserContext.pages().get(0);
         Page page = this.browserContext.newPage();
         defaultPage.bringToFront();
-        changeHTML(defaultPage, "state", "导航至煤炉");
-        page.navigate("https://jp.mercari.com/", new Page.NavigateOptions().setWaitUntil(WaitUntilState.NETWORKIDLE));
-        changeHTML(defaultPage, "state", "寻找搜索框...");
+        JSONArray items = null;
+        try {
+            changeHTML(defaultPage, "state", "导航至煤炉");
+            page.navigate("https://jp.mercari.com/", new Page.NavigateOptions().setWaitUntil(WaitUntilState.NETWORKIDLE));
+            changeHTML(defaultPage, "state", "寻找搜索框...");
 
-        page.getByRole(AriaRole.SEARCHBOX, new Page.GetByRoleOptions().setName("検索キーワードを入力")).fill(name);
-        changeHTML(defaultPage, "state", "检索商品...");
+            page.getByRole(AriaRole.SEARCHBOX, new Page.GetByRoleOptions().setName("検索キーワードを入力")).fill(name);
+            changeHTML(defaultPage, "state", "检索商品...");
 
-        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("検索")).nth(1).click();
-        changeHTML(defaultPage, "state", "等待返回...");
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("検索")).nth(1).click();
+            changeHTML(defaultPage, "state", "等待返回...");
 
-        page.waitForTimeout(1000);
-        page.locator("#search-result").getByRole(AriaRole.CHECKBOX).check();
-        Response response = page.waitForResponse("https://api.mercari.jp/v2/entities:search", () -> {
-            page.waitForLoadState(LoadState.NETWORKIDLE);
+            page.waitForTimeout(1000);
+            page.locator("#search-result").getByRole(AriaRole.CHECKBOX).check();
+            Response response = page.waitForResponse("https://api.mercari.jp/v2/entities:search", () -> {
+                page.waitForLoadState(LoadState.NETWORKIDLE);
 
-        });
-        JSONObject body = JSONUtil.parseObj(response.text());
-        changeHTML(defaultPage, "state", "OK!!!");
-        JSONArray items = body.getJSONArray("items");
-
-        page.close();
-        return items.toString();
+            });
+            JSONObject body = JSONUtil.parseObj(response.text());
+            changeHTML(defaultPage, "state", "OK!!!");
+            items = body.getJSONArray("items");
+            return items.toString();
+        } catch (Exception e) {
+            log.error("发生错误:{}", e.toString());
+        } finally {
+            page.close();
+        }
+        return items;
     }
 
     private static void changeHTML(Page page, String id, String text) {

@@ -2,6 +2,8 @@ package com.example.quanzhouplaywright.Serivce;
 
 import com.example.quanzhouplaywright.Properties.BrowserProperties;
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.Proxy;
+import com.microsoft.playwright.options.ScreenSize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -29,8 +31,12 @@ public class PlaywrightSerivce {
 
     @PostConstruct
     public void initialize() {
+        List<String> args = new ArrayList<>();
+        args.add("--start-maximized");
         this.playwright = Playwright.create();
-        this.browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(browserProperties.getHeadless()));
+        this.browser = playwright.chromium().
+                launch(new BrowserType.LaunchOptions().setHeadless(browserProperties.getHeadless())
+                        .setArgs(args).setProxy(new Proxy("http://127.0.0.1:7890")));
         this.browser.onDisconnected(browser -> {
             context.close();
         });
@@ -55,8 +61,12 @@ public class PlaywrightSerivce {
     public BrowserContext createContext() {
         List<String> permissions = new ArrayList<>();
         permissions.add("geolocation");
-        return this.browser.newContext(new Browser.NewContextOptions().setLocale("zh-CN").setGeolocation(41.889938, 12.492507).
-                setPermissions(permissions));
+        return this.browser.newContext(new Browser.NewContextOptions().setLocale("ja-JP").setGeolocation(41.889938, 12.492507)
+                .setPermissions(permissions)
+                .setScreenSize(new ScreenSize(1920, 1080))
+                .setProxy(new Proxy("http://127.0.0.1:7890"))
+                .setTimezoneId("Asia/Tokyo")
+        );
     }
 
     /**
